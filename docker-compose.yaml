@@ -1,0 +1,31 @@
+version: '3'
+services:
+  pmdiscoveryserver:
+    image: docker.io/exwhyzed/pmdiscoveryserver 
+    ports:
+    - 8761
+  jwtserver:
+    image: docker.io/exwhyzed/jwtserver
+    environment:
+    - eureka.client.service-url.defaultZone=http://pmdiscoveryserver:8761/eureka/
+    - eureka.instance.prefer-ip-address=true
+    - spring.datasource.url=jdbc:mysql://pmdb.cw1xfxcnddzf.us-east-1.rds.amazonaws.com:3306/pmdb
+    - spring.datasource.username=root
+    - spring.datasource.password=sd800956
+    ports:
+    - 8089
+    depends_on:
+    - pmdiscoveryserver
+  mainclient:
+    image: docker.io/exwhyzed/mainclient
+    environment:
+    - eureka.client.service-url.defaultZone=http://pmdiscoveryserver:8761/eureka/
+    - eureka.instance.prefer-ip-address=true
+    - spring.datasource.url=jdbc:mysql://pmdb.cw1xfxcnddzf.us-east-1.rds.amazonaws.com:3306/pmdb
+    - spring.datasource.username=root
+    - spring.datasource.password=sd800956
+    ports:
+    - 8085
+    depends_on:
+    - pmdiscoveryserver
+ 
